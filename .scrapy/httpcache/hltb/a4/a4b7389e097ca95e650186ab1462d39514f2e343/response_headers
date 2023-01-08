@@ -1,0 +1,18 @@
+Content-Length: 21
+Content-Type: text/html; charset=UTF-8
+X-Powered-By: PHP/7.4.27
+X-Frame-Options: deny
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: hltb_alive=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0; path=/; domain=howlongtobeat.com; secure; HttpOnly
+Location: 404
+Content-Encoding: gzip
+Accept-Ranges: bytes
+Date: Fri, 20 May 2022 17:08:40 GMT
+X-Served-By: cache-sna10728-LGB, cache-mrs10569-MRS
+X-Cache: MISS, MISS
+X-Cache-Hits: 0, 0
+X-Timer: S1653066520.195788,VS0,VE502
+Vary: Accept-Encoding
+Strict-Transport-Security: max-age=300
