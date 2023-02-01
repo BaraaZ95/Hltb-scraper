@@ -11,9 +11,9 @@ BOT_NAME = 'howlongtobeat'
 
 SPIDER_MODULES = ['howlongtobeat.spiders']
 NEWSPIDER_MODULE = 'howlongtobeat.spiders'
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
-    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400, }
+#DOWNLOADER_MIDDLEWARES = {
+#    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+#    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400, }
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
