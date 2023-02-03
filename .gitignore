@@ -5,6 +5,7 @@ __pycache__/
 .scrapy/
 .history
 .vscode
+*.jsonlines
 
 # C extensions
 *.so
