@@ -2,31 +2,33 @@ import scrapy
 from urllib.parse import urljoin
 import json
 
-headers = {
+
+
+class HltbSpider(scrapy.Spider):
+    name = 'hltb'
+    headers = {
                 "content-type":"application/json",
                 "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Mobile Safari/537.36", 
                 "referer": "https://howlongtobeat.com/"
             }
-
-class HltbSpider(scrapy.Spider):
-    name = 'hltb'
     
     def start_requests(self):
-        for page in range(1, 3038):                
+        for page in range(1, 3049):                
             url = 'https://howlongtobeat.com/api/search'
             payload = f'{{"searchType":"games","searchTerms":[""],"searchPage":{page},"size":20,"searchOptions":{{"games":{{"userId":0,"platform":"","sortCategory":"popular","rangeCategory":"main","rangeTime":{{"min":null,"max":null}},"gameplay":{{"perspective":"","flow":"","genre":""}},"rangeYear":{{"min":"","max":""}},"modifier":""}},"users":{{"sortCategory":"postcount"}},"filter":"","sort":0,"randomizer":0}}}}'
             
-            yield scrapy.Request(url=url, method='POST', body=payload, headers=headers, callback=self.parse_urls)
+            yield scrapy.Request(url=url, method='POST', body=payload, headers= self.headers, callback=self.parse_urls)
 
     def parse_urls(self, response):        
         json_data = json.loads(response.text)
         games = json_data['data']
         for game in games: 
+            #if not game['game_name'] in Names:
             game_id = game['game_id']
             game_url =  f'https://howlongtobeat.com/game/{game_id}' # for scraping game info
-            #reviews_url = urljoin(response.url,"&s=reviews") # for scraping reviews
+            #reviews_url = urljoin(game_url,"&s=reviews") # for scraping reviews
             
-            yield scrapy.Request(url=game_url, method = 'GET', headers=headers, callback=self.parse_info)
+            yield scrapy.Request(url=game_url, method = 'GET', headers= self.headers, callback=self.parse_info)
             #yield scrapy.Request(url=self.reviews_url, headers= headers, callback=self.parse_reviews)
 
     async def parse_info(self, response):
@@ -71,9 +73,9 @@ class HltbSpider(scrapy.Spider):
             'X-Requested-With': 'XMLHttpRequest', 
             'Content-Type': 'application/json'
             }
-        req =  scrapy.Request(json_url , method = 'GET', body= json_payload, headers = json_headers, callback= self.parse_release_date)
+        req =  scrapy.Request(json_url , method = 'GET', body= json_payload, headers = json_headers, callback= self.parse_additional_info)
         res =  await self.crawler.engine.download(req, self)       
-        info_dict['Release_date'] = self.parse_release_date(res)   
+        info_dict.update(self.parse_additional_info(res)) 
         
         yield info_dict      
     
@@ -96,13 +98,17 @@ class HltbSpider(scrapy.Spider):
         #self.game_dict["genres"]= genres
         #self.game_dict["stats"] = stats
 
-    def parse_release_date(self, response):
-        json_data = json.loads(response.text)
+    def parse_additional_info(self, response):
         try:
-            Release_date = json_data['pageProps']['game']['data']['game'][0]['release_world']
-            return Release_date
-        except:
-            pass
+            json_data = json.loads(response.text)   
+        except json.JSONDecodeError:
+            return None
+        Release_date = json_data['pageProps']['game']['data']['game'][0].get('release_world','')
+        Genres = json_data['pageProps']['game']['data']['game'][0].get('profile_genre','')
+        Review_score = json_data['pageProps']['game']['data']['game'][0].get('review_score','')
+        additional_info = {"Release_date": Release_date, "Genres": Genres, 
+                           "Review_score": Review_score}
+        return additional_info
         
     def parse_reviews(self, response):
         reviews_dict = {}
