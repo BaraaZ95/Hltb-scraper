@@ -17,7 +17,8 @@ class HltbSpider(scrapy.Spider):
             url = 'https://howlongtobeat.com/api/search'
             payload = f'{{"searchType":"games","searchTerms":[""],"searchPage":{page},"size":20,"searchOptions":{{"games":{{"userId":0,"platform":"","sortCategory":"popular","rangeCategory":"main","rangeTime":{{"min":null,"max":null}},"gameplay":{{"perspective":"","flow":"","genre":""}},"rangeYear":{{"min":"","max":""}},"modifier":""}},"users":{{"sortCategory":"postcount"}},"filter":"","sort":0,"randomizer":0}}}}'
             
-            yield scrapy.Request(url=url, method='POST', body=payload, headers= self.headers, callback=self.parse_urls)
+            yield scrapy.Request(url=url, method='POST', 
+                                 body=payload, headers= self.headers, callback=self.parse_urls)
 
     def parse_urls(self, response):        
         json_data = json.loads(response.text)
